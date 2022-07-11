@@ -167,7 +167,7 @@ jobs:
     
   download-quality-results:
     runs-on: ubuntu-latest
-    needs: run-level2
+    needs: codeql-analysis-quality
     steps:
 
     - uses: se-apac-sandbox/ghas-reports-action@main
