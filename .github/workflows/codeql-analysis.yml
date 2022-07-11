@@ -1,4 +1,4 @@
-name: "WebGoat - CodeQL Multi-level Scan"
+name: "WebGoat - CodeQL Scans"
 
 on: 
   workflow_dispatch:
@@ -7,8 +7,8 @@ on:
 
 jobs:
 
-  run-default-level:
-    name: Default CodeQL Scan
+  codeql-analysis-default:
+    name: GitHub CodeQL Analysis - Default
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -49,23 +49,23 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1  
     
-  download-default-level:
+  download-default-results:
     runs-on: ubuntu-latest
-    needs: run-default-level
+    needs: codeql-analysis-default
     steps:
 
-    - uses: amitgupta7/ghas-reports-action@main
+    - uses: se-apac-sandbox/ghas-reports-action@main
       with:
         token: ${{ secrets.ORG_PAT }}
 
     - uses: actions/upload-artifact@v2
       with:
-        name: results-default
+        name: codeql-default-results
         path: alerts.xlsx
     
   run-level1:
-    name: CodeQL Scan Level 1
-    needs: [run-default-level, download-default-level]
+    name: GitHub CodeQL Analysis - Extended
+    needs: [codeql-analysis-default, download-default-results]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -107,7 +107,7 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
     
-  download-level1:
+  download-extended-results:
     runs-on: ubuntu-latest
     needs: run-level1
     steps:
