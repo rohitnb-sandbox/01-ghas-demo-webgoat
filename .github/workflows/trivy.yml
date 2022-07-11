@@ -27,7 +27,7 @@ jobs:
           docker build -t docker.io/webgoat/goatandwolf:v8.2.2 .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.5.1
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'docker.io/webgoat/goatandwolf:v8.2.2'
           format: 'template'
