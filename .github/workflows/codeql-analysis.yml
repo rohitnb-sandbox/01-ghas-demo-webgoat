@@ -4,11 +4,13 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
 
   codeql-analysis-default:
-    name: GitHub CodeQL Analysis - Default
+    name: GitHub CodeQL Analysis - Default Query Pack
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -37,7 +39,7 @@ jobs:
       
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
  
@@ -47,9 +49,10 @@ jobs:
       if: matrix.language == 'java'
       
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1  
+      uses: github/codeql-action/analyze@v2  
     
   download-default-results:
+    name: Download CodeQL Analysis Results - Default Query Pack
     runs-on: ubuntu-latest
     needs: codeql-analysis-default
     steps:
@@ -64,7 +67,7 @@ jobs:
         path: alerts.xlsx
     
   codeql-analysis-extended:
-    name: GitHub CodeQL Analysis - Extended
+    name: GitHub CodeQL Analysis - Extended Query Pack
     needs: [codeql-analysis-default, download-default-results]
     runs-on: ubuntu-latest
     permissions:
@@ -94,7 +97,7 @@ jobs:
       
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
         queries: security-extended
@@ -105,9 +108,10 @@ jobs:
       if: matrix.language == 'java'
       
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
     
   download-extended-results:
+    name: Download CodeQL Analysis Results - Extended Query Pack
     runs-on: ubuntu-latest
     needs: codeql-analysis-extended
     steps:
@@ -122,7 +126,7 @@ jobs:
         path: alerts.xlsx
 
   codeql-analysis-quality:
-    name: CodeQL Scan Level 2
+    name: GitHub CodeQL Analysis - Quality Query Pack
     needs: [codeql-analysis-extended, download-extended-results]
     runs-on: ubuntu-latest
     permissions:
@@ -152,7 +156,7 @@ jobs:
       
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
         queries: security-and-quality
@@ -163,9 +167,10 @@ jobs:
       if: matrix.language == 'java'
       
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
     
   download-quality-results:
+    name: GitHub CodeQL Analysis - Quality Query Pack
     runs-on: ubuntu-latest
     needs: codeql-analysis-quality
     steps:
